@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: mephi_user
+      POSTGRES_PASSWORD: secure_pass
+    ports:
+      - "5432:5432"
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./html:/usr/share/nginx/html
+    ports:
+      - "80:80"

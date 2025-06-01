@@ -1,0 +1,53 @@
+---
+- name: Install required packages
+  dnf:
+    name: ["yum-utils", "device-mapper-persistent-data", "lvm2", "git"]
+    state: present
+
+- name: Add Docker repository
+  command: dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Install Docker
+  dnf:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+
+- name: Start and enable Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Install Docker Compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/latest/download/docker-compose-{{ 'linux' if ansible_architecture == 'x86_64' else 'linux' }}-{{ ansible_architecture }}"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+
+- name: Create project directory
+  file:
+    path: /opt/mephi
+    state: directory
+
+- name: Copy docker-compose.yml
+  copy:
+    src: docker-compose.yml
+    dest: /opt/mephi/docker-compose.yml
+
+- name: Create HTML directory
+  file:
+    path: /opt/mephi/html
+    state: directory
+
+- name: Copy index.html
+  copy:
+    src: index.html
+    dest: /opt/mephi/html/index.html
+
+- name: Run Docker Compose
+  command: docker-compose up -d
+  args:
+    chdir: /opt/mephi
