@@ -1,0 +1,28 @@
+Vagrant.configure("2") do |config|
+  # -----
+  # Установка arm64 бокса с https://portal.cloud.hashicorp.com/vagrant/discover/rockylinux/9
+  # 
+  # После установки:
+  #   vagrant box add rocky-box ~/Downloads/Rocky-9-Vagrant-Vbox.latest.aarch64.box
+  #   vagrant init rocky-box 
+  # -----
+  config.vm.box = "rocky-box"
+
+  config.vm.define "rocky1" do |rocky1|
+    rocky1.vm.network "private_network", ip: "192.168.56.3"
+
+    rocky1.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+  end
+
+  config.vm.define "rocky2" do |rocky2|
+    rocky2.vm.network "private_network", ip: "192.168.56.4"
+
+    rocky2.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+  end
+end
